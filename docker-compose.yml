@@ -5,11 +5,15 @@ services:
       args:
         JAR_FILE: inventory-service/target/inventory-service.jar
     ports:
-      - "8081:8080"
+      - "8081:8443"
+    env_file:
+      - .env
   login-service:
     build:
       context: .
       args:
         JAR_FILE: login-service/target/login-service.jar
     ports:
-      - "8082:8080"
+      - "8082:8443"
+    env_file:
+      - .env
