@@ -1,0 +1,21 @@
+server:
+  port: 8443
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-password: ${SSL_STORE_PASSWORD}
+    key-store-type: PKCS12
+    key-alias: tomcat
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: inventory-service
+              uri: http://inventory-service:8080
+              predicates:
+                - Path=/inventory/**
+            - id: login-service
+              uri: http://login-service:8080
+              predicates:
+                - Path=/login/**
