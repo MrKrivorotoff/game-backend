@@ -18,4 +18,4 @@ spring:
             - id: login-service
               uri: http://login-service:8080
               predicates:
-                - Path=/login/**
+                - Path=/auth/**
