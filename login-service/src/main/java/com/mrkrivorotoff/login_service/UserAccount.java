@@ -6,7 +6,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Table("users")
 public record UserAccount(
-        @Id long id,
+        @Id Long id,
         @Column("username") String username,
         @Column("password_hash") String passwordHash
 ) {

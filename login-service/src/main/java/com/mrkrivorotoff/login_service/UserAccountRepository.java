@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface UserAccountRepository extends CrudRepository<UserAccount, Long> {
-    @Query("SELECT * FROM users WHERE username = :username")
-    Optional<UserAccount> findByUsername(@Param("username") String username);
+    @Query("SELECT * FROM users WHERE LOWER(username) = LOWER(:username)")
+    Optional<UserAccount> findByUsernameIgnoreCase(@Param("username") String username);
 }

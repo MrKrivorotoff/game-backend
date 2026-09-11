@@ -33,14 +33,25 @@ public final class LoginController {
         var username = request.getUsername();
         log.info("login requested. username={}", username);
         return switch (loginService.login(username, request.getPassword())) {
-            case AuthResult.Success success -> {
+            case LoginResult.Success success -> {
                 var response = Login.LoginResponse.newBuilder()
                         .setToken(success.authToken())
                         .build();
                 yield ResponseEntity.ok(response);
             }
-            case AuthResult.InvalidRequest _ -> ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-            case AuthResult.InvalidCredentials _ -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            case LoginResult.InvalidLoginData _ -> ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            case LoginResult.InvalidCredentials _ -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        };
+    }
+
+    @PostMapping(value = "register", consumes = APPLICATION_PROTOBUF_VALUE)
+    public ResponseEntity<Void> register(@RequestBody Login.RegisterRequest request) {
+        var username = request.getUsername();
+        log.info("register requested. username={}", username);
+        return switch (loginService.registerNewUser(username, request.getPassword())) {
+            case SUCCESS -> ResponseEntity.status(HttpStatus.CREATED).build();
+            case INVALID_REGISTRATION_DATA -> ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            case CONFLICT -> ResponseEntity.status(HttpStatus.CONFLICT).build();
         };
     }
 }
