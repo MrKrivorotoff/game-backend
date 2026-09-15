@@ -10,10 +10,10 @@
         <relativePath/>
     </parent>
     <groupId>com.mrkrivorotoff</groupId>
-    <artifactId>login-service</artifactId>
+    <artifactId>auth-service</artifactId>
     <version>0.0.1</version>
-    <name>Login Service</name>
-    <description>Login Service</description>
+    <name>Auth Service</name>
+    <description>Auth Service</description>
     <properties>
         <java.version>26</java.version>
         <protobuf-java.version>4.36.1</protobuf-java.version>
@@ -63,7 +63,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>login-service</finalName>
+        <finalName>auth-service</finalName>
         <plugins>
             <!-- Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-maven-plugin -->
             <plugin>

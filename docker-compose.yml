@@ -10,11 +10,11 @@ services:
       context: .
       args:
         JAR_FILE: inventory-service/target/inventory-service.jar
-  login-service:
+  auth-service:
     build:
       context: .
       args:
-        JAR_FILE: login-service/target/login-service.jar
+        JAR_FILE: auth-service/target/auth-service.jar
     environment:
       POSTGRES_HOST: database
       POSTGRES_PORT: 5432
@@ -33,4 +33,4 @@ services:
       - .env
     depends_on:
       - inventory-service
-      - login-service
+      - auth-service

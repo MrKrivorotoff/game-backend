@@ -1,4 +1,4 @@
-package com.mrkrivorotoff.login_service;
+package com.mrkrivorotoff.auth_service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -11,14 +11,14 @@ import java.util.regex.Pattern;
 import static java.util.Objects.requireNonNull;
 
 @Service
-public final class LoginService {
+public final class AuthService {
     private static final Pattern USERNAME_PATTERN = Pattern.compile("[A-Za-z0-9_]{3,32}");
 
     private final UserAccountRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public LoginService(UserAccountRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserAccountRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = requireNonNull(userRepository);
         this.passwordEncoder = requireNonNull(passwordEncoder);
     }

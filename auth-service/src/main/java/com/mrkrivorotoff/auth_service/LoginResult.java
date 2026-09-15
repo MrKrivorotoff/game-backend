@@ -1,4 +1,4 @@
-package com.mrkrivorotoff.login_service;
+package com.mrkrivorotoff.auth_service;
 
 public sealed interface LoginResult {
     record Success(String authToken) implements LoginResult {

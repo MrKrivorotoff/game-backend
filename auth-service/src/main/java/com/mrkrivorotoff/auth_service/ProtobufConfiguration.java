@@ -1,4 +1,4 @@
-package com.mrkrivorotoff.login_service;
+package com.mrkrivorotoff.auth_service;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

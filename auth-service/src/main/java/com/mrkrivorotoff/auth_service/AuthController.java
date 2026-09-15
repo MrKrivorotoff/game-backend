@@ -1,6 +1,7 @@
-package com.mrkrivorotoff.login_service;
+package com.mrkrivorotoff.auth_service;
 
-import com.mrkrivorotoff.login_service.proto.Login;
+import com.mrkrivorotoff.auth_service.proto.Login;
+import com.mrkrivorotoff.auth_service.proto.Register;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +18,13 @@ import static org.springframework.http.MediaType.APPLICATION_PROTOBUF_VALUE;
 
 @Controller
 @RequestMapping("auth")
-public final class LoginController {
-    private static final Logger log = LoggerFactory.getLogger(LoginController.class);
+public final class AuthController {
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
-    private final LoginService loginService;
+    private final AuthService loginService;
 
     @Autowired
-    public LoginController(LoginService loginService) {
+    public AuthController(AuthService loginService) {
         this.loginService = requireNonNull(loginService);
     }
 
@@ -45,7 +46,7 @@ public final class LoginController {
     }
 
     @PostMapping(value = "register", consumes = APPLICATION_PROTOBUF_VALUE)
-    public ResponseEntity<Void> register(@RequestBody Login.RegisterRequest request) {
+    public ResponseEntity<Void> register(@RequestBody Register.RegisterRequest request) {
         var username = request.getUsername();
         log.info("register requested. username={}", username);
         return switch (loginService.registerNewUser(username, request.getPassword())) {

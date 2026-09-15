@@ -1,4 +1,4 @@
-package com.mrkrivorotoff.login_service;
+package com.mrkrivorotoff.auth_service;
 
 public enum RegistrationResult {
     SUCCESS,
