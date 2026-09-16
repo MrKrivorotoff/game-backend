@@ -5,7 +5,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 import static java.util.Objects.requireNonNull;
@@ -23,17 +22,16 @@ public final class AuthService {
         this.passwordEncoder = requireNonNull(passwordEncoder);
     }
 
-    private static String createAuthToken() {
-        return UUID.randomUUID().toString();
-    }
-
     public LoginResult login(String username, String password) {
         if (username.isBlank() || password.isEmpty())
             return new LoginResult.InvalidLoginData();
         var foundUser = userRepository.findByUsernameIgnoreCase(username);
-        if (foundUser.isEmpty() || !passwordEncoder.matches(password, foundUser.get().passwordHash()))
-            return new LoginResult.InvalidCredentials();
-        return new LoginResult.Success(createAuthToken());
+        if (foundUser.isPresent()) {
+            var userAccount = foundUser.get();
+            if (passwordEncoder.matches(password, userAccount.passwordHash()))
+                return new LoginResult.Success(userAccount.id());
+        }
+        return new LoginResult.InvalidCredentials();
     }
 
     public RegistrationResult registerNewUser(String username, String password) {

@@ -21,11 +21,13 @@ import static org.springframework.http.MediaType.APPLICATION_PROTOBUF_VALUE;
 public final class AuthController {
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
-    private final AuthService loginService;
+    private final AuthService authService;
+    private final SessionService sessionService;
 
     @Autowired
-    public AuthController(AuthService loginService) {
-        this.loginService = requireNonNull(loginService);
+    public AuthController(AuthService authService, SessionService sessionService) {
+        this.authService = requireNonNull(authService);
+        this.sessionService = requireNonNull(sessionService);
     }
 
     @ResponseBody
@@ -33,10 +35,11 @@ public final class AuthController {
     public ResponseEntity<Login.LoginResponse> login(@RequestBody Login.LoginRequest request) {
         var username = request.getUsername();
         log.info("login requested. username={}", username);
-        return switch (loginService.login(username, request.getPassword())) {
+        return switch (authService.login(username, request.getPassword())) {
             case LoginResult.Success success -> {
+                var sessionId = sessionService.createUserSession(success.userId());
                 var response = Login.LoginResponse.newBuilder()
-                        .setToken(success.authToken())
+                        .setSessionId(sessionId)
                         .build();
                 yield ResponseEntity.ok(response);
             }
@@ -49,7 +52,7 @@ public final class AuthController {
     public ResponseEntity<Void> register(@RequestBody Register.RegisterRequest request) {
         var username = request.getUsername();
         log.info("register requested. username={}", username);
-        return switch (loginService.registerNewUser(username, request.getPassword())) {
+        return switch (authService.registerNewUser(username, request.getPassword())) {
             case SUCCESS -> ResponseEntity.status(HttpStatus.CREATED).build();
             case INVALID_REGISTRATION_DATA -> ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             case CONFLICT -> ResponseEntity.status(HttpStatus.CONFLICT).build();

@@ -1,7 +1,7 @@
 package com.mrkrivorotoff.auth_service;
 
 public sealed interface LoginResult {
-    record Success(String authToken) implements LoginResult {
+    record Success(long userId) implements LoginResult {
     }
 
     record InvalidLoginData() implements LoginResult {
