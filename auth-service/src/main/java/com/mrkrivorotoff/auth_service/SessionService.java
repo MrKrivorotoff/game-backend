@@ -1,26 +1,26 @@
 package com.mrkrivorotoff.auth_service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
 @Service
 public final class SessionService {
-    private final RedisTemplate<String, String> redisTemplate;
+    private final SessionTokenGenerator sessionIdGenerator;
+    private final ValueOperations<String, String> redisValueOperations;
 
     @Autowired
-    public SessionService(StringRedisTemplate redisTemplate) {
-        this.redisTemplate = requireNonNull(redisTemplate);
+    public SessionService(SessionTokenGenerator sessionIdGenerator, StringRedisTemplate redisTemplate) {
+        this.sessionIdGenerator = requireNonNull(sessionIdGenerator);
+        this.redisValueOperations = redisTemplate.opsForValue();
     }
 
     public String createUserSession(long userId) {
-        var sessionId = UUID.randomUUID().toString();
-        redisTemplate.opsForValue().set(sessionId, String.valueOf(userId));
+        var sessionId = sessionIdGenerator.generate();
+        redisValueOperations.set(sessionId, Long.toString(userId));
         return sessionId;
     }
 }
