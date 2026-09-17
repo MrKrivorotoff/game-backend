@@ -34,7 +34,7 @@ public final class AuthController {
     @PostMapping(value = "login", consumes = APPLICATION_PROTOBUF_VALUE, produces = APPLICATION_PROTOBUF_VALUE)
     public ResponseEntity<Login.LoginResponse> login(@RequestBody Login.LoginRequest request) {
         var username = request.getUsername();
-        log.info("login requested. username={}", username);
+        log.info("POST auth/login requested. username={}", username);
         return switch (authService.login(username, request.getPassword())) {
             case LoginResult.Success success -> {
                 var sessionId = sessionService.createUserSession(success.userId());
@@ -51,7 +51,7 @@ public final class AuthController {
     @PostMapping(value = "register", consumes = APPLICATION_PROTOBUF_VALUE)
     public ResponseEntity<Void> register(@RequestBody Register.RegisterRequest request) {
         var username = request.getUsername();
-        log.info("register requested. username={}", username);
+        log.info("POST auth/register requested. username={}", username);
         return switch (authService.registerNewUser(username, request.getPassword())) {
             case SUCCESS -> ResponseEntity.status(HttpStatus.CREATED).build();
             case INVALID_REGISTRATION_DATA -> ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

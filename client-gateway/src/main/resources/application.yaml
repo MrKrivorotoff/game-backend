@@ -6,16 +6,23 @@ server:
     key-store-type: PKCS12
     key-alias: tomcat
 spring:
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
   cloud:
     gateway:
       server:
         webflux:
           routes:
-            - id: inventory-service
-              uri: http://inventory-service:8080
-              predicates:
-                - Path=/inventory/**
             - id: auth-service
               uri: http://auth-service:8080
               predicates:
                 - Path=/auth/**
+            - id: inventory-service
+              uri: http://inventory-service:8080
+              predicates:
+                - Path=/inventory/**
+              filters:
+                - RemoveRequestHeader=X-User-Id
+                - SessionAuthentication

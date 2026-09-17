@@ -40,6 +40,9 @@ services:
         JAR_FILE: client-gateway/target/client-gateway.jar
     ports:
       - "8443:8443"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     env_file:
       - .env
     depends_on:

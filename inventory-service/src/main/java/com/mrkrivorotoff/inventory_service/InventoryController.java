@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -16,8 +17,8 @@ public final class InventoryController {
 
     @ResponseBody
     @GetMapping("user_currencies")
-    public Map<String, Long> getUserCurrencies() {
-        log.info("inventory.getUserCurrencies requested");
+    public Map<String, Long> getUserCurrencies(@RequestHeader("X-User-Id") String userId) {
+        log.info("GET inventory/user_currencies requested. userId={}", userId);
         return Map.of("Gold", 1000L);
     }
 }
