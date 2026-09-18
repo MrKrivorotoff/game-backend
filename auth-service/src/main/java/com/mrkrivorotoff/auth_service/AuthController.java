@@ -5,13 +5,14 @@ import com.mrkrivorotoff.auth_service.proto.Register;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 import static java.util.Objects.requireNonNull;
 import static org.springframework.http.MediaType.APPLICATION_PROTOBUF_VALUE;
@@ -31,15 +32,33 @@ public final class AuthController {
     }
 
     @ResponseBody
-    @PostMapping(value = "login", consumes = APPLICATION_PROTOBUF_VALUE, produces = APPLICATION_PROTOBUF_VALUE)
+    @PostMapping(value = "login", produces = APPLICATION_PROTOBUF_VALUE, consumes = APPLICATION_PROTOBUF_VALUE)
     public ResponseEntity<Login.LoginResponse> login(@RequestBody Login.LoginRequest request) {
         var username = request.getUsername();
         log.info("POST auth/login requested. username={}", username);
-        return switch (authService.login(username, request.getPassword())) {
+        return loginImpl(username, request.getPassword());
+    }
+
+    @ResponseBody
+    @PostMapping(value = "login_basic", produces = APPLICATION_PROTOBUF_VALUE)
+    public ResponseEntity<Login.LoginResponse> loginBasic(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
+        var credentials = (BasicCredentials)null;
+        try {
+            credentials = BasicAuthorizationParser.parse(authorization);
+        } catch (IllegalArgumentException _) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        var username = credentials.username();
+        log.info("POST auth/login_basic requested. username={}", username);
+        return loginImpl(username, credentials.password());
+    }
+
+    private ResponseEntity<Login.LoginResponse> loginImpl(String username, String password) {
+        return switch (authService.login(username, password)) {
             case LoginResult.Success success -> {
                 var sessionId = sessionService.createUserSession(success.userId());
                 var response = Login.LoginResponse.newBuilder()
-                        .setSessionId(sessionId)
+                        .setAccessToken(sessionId)
                         .build();
                 yield ResponseEntity.ok(response);
             }

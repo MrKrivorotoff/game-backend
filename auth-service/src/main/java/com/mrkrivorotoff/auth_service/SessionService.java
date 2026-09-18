@@ -9,18 +9,18 @@ import static java.util.Objects.requireNonNull;
 
 @Service
 public final class SessionService {
-    private final SessionTokenGenerator sessionIdGenerator;
+    private final SessionTokenGenerator sessionTokenGenerator;
     private final ValueOperations<String, String> redisValueOperations;
 
     @Autowired
-    public SessionService(SessionTokenGenerator sessionIdGenerator, StringRedisTemplate redisTemplate) {
-        this.sessionIdGenerator = requireNonNull(sessionIdGenerator);
+    public SessionService(SessionTokenGenerator sessionTokenGenerator, StringRedisTemplate redisTemplate) {
+        this.sessionTokenGenerator = requireNonNull(sessionTokenGenerator);
         this.redisValueOperations = redisTemplate.opsForValue();
     }
 
     public String createUserSession(long userId) {
-        var sessionId = sessionIdGenerator.generate();
-        redisValueOperations.set(sessionId, Long.toString(userId));
-        return sessionId;
+        var sessionToken = sessionTokenGenerator.generate();
+        redisValueOperations.set(sessionToken, Long.toString(userId));
+        return sessionToken;
     }
 }
