@@ -36,7 +36,10 @@ public final class SessionAuthenticationGatewayFilterFactory extends AbstractGat
                 return unauthorized(exchange);
             return redisTemplate.opsForValue()
                     .get(sessionId)
+                    .defaultIfEmpty("")
                     .flatMap(userId -> {
+                        if (userId.isEmpty())
+                            return unauthorized(exchange);
                         var request = exchange.getRequest()
                                 .mutate()
                                 .headers(headers -> headers.set("X-User-Id", userId))
@@ -46,8 +49,7 @@ public final class SessionAuthenticationGatewayFilterFactory extends AbstractGat
                                         .request(request)
                                         .build()
                         );
-                    })
-                    .switchIfEmpty(Mono.defer(() -> unauthorized(exchange)));
+                    });
         };
     }
 
