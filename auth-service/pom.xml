@@ -16,7 +16,7 @@
     <description>Auth Service</description>
     <properties>
         <java.version>26</java.version>
-        <protobuf-java.version>4.36.1</protobuf-java.version>
+        <protobuf-java.version>4.36.2</protobuf-java.version>
     </properties>
     <dependencies>
         <!-- Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
@@ -82,7 +82,7 @@
             <plugin>
                 <groupId>io.github.ascopes</groupId>
                 <artifactId>protobuf-maven-plugin</artifactId>
-                <version>5.1.8</version>
+                <version>5.1.9</version>
                 <configuration>
                     <protoc>${protobuf-java.version}</protoc>
                 </configuration>
