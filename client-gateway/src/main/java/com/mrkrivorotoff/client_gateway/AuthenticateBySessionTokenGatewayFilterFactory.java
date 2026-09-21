@@ -52,7 +52,7 @@ public final class AuthenticateBySessionTokenGatewayFilterFactory extends Abstra
         };
     }
 
-    private Mono<Void> unauthorized(ServerWebExchange exchange) {
+    private static Mono<Void> unauthorized(ServerWebExchange exchange) {
         var response = exchange.getResponse();
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
         response.getHeaders().set(HttpHeaders.WWW_AUTHENTICATE, "Bearer");
