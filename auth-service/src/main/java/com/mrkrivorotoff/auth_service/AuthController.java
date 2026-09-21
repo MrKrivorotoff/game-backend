@@ -11,9 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-
 import static java.util.Objects.requireNonNull;
 import static org.springframework.http.MediaType.APPLICATION_PROTOBUF_VALUE;
 
@@ -42,7 +39,7 @@ public final class AuthController {
     @ResponseBody
     @PostMapping(value = "login_basic", produces = APPLICATION_PROTOBUF_VALUE)
     public ResponseEntity<Login.LoginResponse> loginBasic(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
-        var credentials = (BasicCredentials)null;
+        var credentials = (BasicCredentials) null;
         try {
             credentials = BasicAuthorizationParser.parse(authorization);
         } catch (IllegalArgumentException _) {

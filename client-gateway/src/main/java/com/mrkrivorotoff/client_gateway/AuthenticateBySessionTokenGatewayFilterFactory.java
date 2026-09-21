@@ -10,15 +10,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 import static java.util.Objects.requireNonNull;
 
 @Component
-public final class SessionAuthenticationGatewayFilterFactory extends AbstractGatewayFilterFactory<SessionAuthenticationGatewayFilterFactory.Config> {
+public final class AuthenticateBySessionTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<AuthenticateBySessionTokenGatewayFilterFactory.Config> {
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final ReactiveStringRedisTemplate redisTemplate;
 
-    public SessionAuthenticationGatewayFilterFactory(ReactiveStringRedisTemplate redisTemplate) {
+    public AuthenticateBySessionTokenGatewayFilterFactory(ReactiveStringRedisTemplate redisTemplate) {
         super(Config.class);
         this.redisTemplate = requireNonNull(redisTemplate);
     }
@@ -42,13 +44,10 @@ public final class SessionAuthenticationGatewayFilterFactory extends AbstractGat
                             return unauthorized(exchange);
                         var request = exchange.getRequest()
                                 .mutate()
-                                .headers(headers -> headers.set("X-User-Id", userId))
+                                .headers(httpHeaders -> httpHeaders.set(config.getHeaderName(), userId))
                                 .build();
-                        return chain.filter(
-                                exchange.mutate()
-                                        .request(request)
-                                        .build()
-                        );
+
+                        return chain.filter(exchange.mutate().request(request).build());
                     });
         };
     }
@@ -60,6 +59,20 @@ public final class SessionAuthenticationGatewayFilterFactory extends AbstractGat
         return response.setComplete();
     }
 
+    @Override
+    public List<String> shortcutFieldOrder() {
+        return List.of("headerName");
+    }
+
     public static final class Config {
+        private String headerName;
+
+        public String getHeaderName() {
+            return headerName;
+        }
+
+        public void setHeaderName(String headerName) {
+            this.headerName = headerName;
+        }
     }
 }

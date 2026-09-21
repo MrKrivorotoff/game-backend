@@ -25,4 +25,5 @@ spring:
                 - Path=/inventory/**
               filters:
                 - RemoveRequestHeader=X-User-Id
-                - SessionAuthentication
+                - AuthenticateBySessionToken=X-User-Id
+                - RemoveRequestHeader=Authorization
