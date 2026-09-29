@@ -9,6 +9,7 @@
     <modules>
         <module>auth-service</module>
         <module>client-gateway</module>
+        <module>client-gateway-reactive</module>
         <module>inventory-service</module>
     </modules>
 </project>

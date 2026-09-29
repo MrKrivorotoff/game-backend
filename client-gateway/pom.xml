@@ -18,10 +18,10 @@
         <java.version>26</java.version>
     </properties>
     <dependencies>
-        <!-- Source: https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-gateway-server-webflux -->
+        <!-- Source: https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-gateway-server-webmvc -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway-server-webflux</artifactId>
+            <artifactId>spring-cloud-starter-gateway-server-webmvc</artifactId>
             <version>5.0.3</version>
             <scope>compile</scope>
         </dependency>
