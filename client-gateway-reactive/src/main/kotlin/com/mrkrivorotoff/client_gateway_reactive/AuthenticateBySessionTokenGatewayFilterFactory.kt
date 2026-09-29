@@ -39,7 +39,7 @@ class AuthenticateBySessionTokenGatewayFilterFactory(redisTemplate: ReactiveStri
         val sessionId = exchange.request.headers
             .getFirst(HttpHeaders.AUTHORIZATION)
             ?.takeIf { it.startsWith(BEARER_PREFIX) }
-            ?.removePrefix(BEARER_PREFIX)
+            ?.substring(BEARER_PREFIX.length)
             ?.takeIf { it.isNotBlank() }
             ?: return null
         return redisValueOperations
