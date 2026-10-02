@@ -12,12 +12,10 @@ public final class BasicAuthorizationParser {
     }
 
     public static BasicCredentials parse(String authorization) {
-        if (authorization == null || !authorization.startsWith(BASIC_PREFIX)) {
+        if (authorization == null || !authorization.startsWith(BASIC_PREFIX))
             throw new IllegalArgumentException("Invalid authorization scheme");
-        }
 
         var encoded = authorization.substring(BASIC_PREFIX.length());
-
         var decoded = (byte[]) null;
         try {
             decoded = DECODER.decode(encoded);
@@ -26,11 +24,9 @@ public final class BasicAuthorizationParser {
         }
 
         var credentials = new String(decoded, StandardCharsets.UTF_8);
-
         var separator = credentials.indexOf(':');
-        if (separator < 0) {
+        if (separator < 0)
             throw new IllegalArgumentException("Invalid Basic credentials");
-        }
 
         var username = credentials.substring(0, separator);
         var password = credentials.substring(separator + 1);
